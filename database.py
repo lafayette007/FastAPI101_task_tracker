@@ -23,7 +23,7 @@ class Base(DeclarativeBase):
     pass
 
 # таблица Задачи
-class Tasks(Base):
+class TasksModel(Base):
     __tablename__ = "tasks"
 
     id: Mapped[int] = mapped_column(primary_key=True)   # указываем что это поле - первичный ключ таблицы (нам обязательно нужен хотя бы один)

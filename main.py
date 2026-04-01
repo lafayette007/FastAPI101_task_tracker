@@ -1,14 +1,10 @@
-from fastapi import (
-    FastAPI,
-    Depends             # инъекция зависимостей
-)
-from pydantic import BaseModel
-from typing import Annotated
+from fastapi import FastAPI
 
 # https://fastapi.tiangolo.com/advanced/events/ - копируем код отсюда про Lifespan (жизненный цикл)
 from contextlib import asynccontextmanager  # декоратор, который позволяет создавать контекстные менеджеры со словом yield
 
 from database import create_tables, delete_tables
+from router import router as tasks_router
 
 
 @asynccontextmanager
@@ -20,33 +16,8 @@ async def lifespan(app: FastAPI):
     print("База таблиц очищена")
     await create_tables()
     print("База таблиц готова к работе")
-
     yield
     print("Выключение приложения")
 
 app = FastAPI(lifespan=lifespan)
- 
-# это схемы в Pydantic - для проверки типов данных и ввода значений полей
-class TaskAddSchema(BaseModel):
-    name: str
-    description: str | None
-
-
-class TaskSchema(TaskAddSchema):
-    id: int
-
-
-tasks = []
-
-@app.post("/tasks")
-async def add_task(
-        # task: TaskAddSchema
-        task: Annotated[TaskAddSchema, Depends()],
-):
-    tasks.append(task)
-    return {"Ok": True}
-
-# @app.get("/tasks")
-# def get_tasks():
-#     task = TaskSchema(name="Создай Strategy OS", description="Система стратегического планирования")
-#     return {"data": task}
+app.include_router(tasks_router)        # добавление нового роутера в FastAPI
