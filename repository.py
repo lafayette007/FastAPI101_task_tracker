@@ -25,6 +25,6 @@ class TaskRepository:
             task_models = result.scalars().all()    # all() - найти все объекты БД
             # чтобы подсказать в API - в каком виде будут получены результаты
             # для этого конвертируем объекты БД (после их получения) к pydantic схемам
-            # task_schemas = [TaskSchema.model_validate(task_model) for task_model in task_models]
-            return task_models
-            # return task_schemas
+            task_schemas = [TaskSchema.model_validate(task_model) for task_model in task_models]
+            # return task_models
+            return task_schemas
