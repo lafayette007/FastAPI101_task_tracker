@@ -8,3 +8,8 @@ class TaskAddSchema(BaseModel):
 
 class TaskSchema(TaskAddSchema):
     id: int
+
+
+class TaskIdSchema(BaseModel):
+    ok: bool = True
+    task_id: int

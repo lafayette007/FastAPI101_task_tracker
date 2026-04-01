@@ -8,7 +8,7 @@ from fastapi import (
 )
 
 from repository import TaskRepository
-from schemas import TaskAddSchema
+from schemas import TaskAddSchema, TaskSchema, TaskIdSchema
 
 router = APIRouter(
     prefix="/tasks",                # чтобы не писать его в каждом эндпойнте как здесь @router.post("/tasks")
@@ -19,12 +19,15 @@ router = APIRouter(
 async def add_task(
         # task: TaskAddSchema
         task: Annotated[TaskAddSchema, Depends()],
-):
+) -> TaskIdSchema:
     # tasks.append(task)
     task_id = await TaskRepository.add_one(task)
     return {"Ok": True, "task_id": task_id}
 
 @router.get("")
-async def get_tasks():
+async def get_tasks(
+) -> list[TaskSchema]:
+# ):
     tasks = await TaskRepository.find_all()
-    return {"tasks": tasks}
+    # return {"tasks": tasks}
+    return tasks
